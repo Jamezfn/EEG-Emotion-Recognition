@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 
