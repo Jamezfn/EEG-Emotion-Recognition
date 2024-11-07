@@ -85,7 +85,7 @@ keras
 
 1. Clone this repository to your local machine:
     ```bash
-    git clone https://github.com/yourusername/EEG-Emotion-Recognition.git
+    git clone https://github.com/Jamezfn/EEG-Emotion-Recognition.git
     cd EEG-Emotion-Recognition
     ```
 
