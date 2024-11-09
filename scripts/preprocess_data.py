@@ -21,6 +21,7 @@ def load_data(file_path):
     """
     try:
         data = pd.read_csv(file_path)
+        data.columns = data.columns.str.replace('# ', '')
         return data
     except FileNotFoundError:
         logging.error(f"Error: The file {file_path} does not exist.")
@@ -47,13 +48,11 @@ def check_dataset(data, required_columns=None):
         The first few rows, info, and summary statistics of the dataset.
     """
     if required_columns is None:
-<<<<<<< HEAD
-        required_columns = ['mean_0_a', 'mean_1_a', 'mean_2_a_', 'label']  # Replace with actual column names if different
-=======
-        required_columns = ['mean_0_a', 'mean_1_a','mean_2_a', 'mean_3_a', 'mean_4_a','mean_d_0_a','mean_d_1_a','mean_d_2_a','mean_d_3_a','mean_d_4_a','mean_d_0_a2','mean_d_1_a2','mean_d_2_a2','mean_d_3_a2','mean_d_4_a2','mean_d_5_a','mean_d_6_a','mean_d_7_a','mean_d_8_a','mean_d_9_a','mean_d_10_a', 'Emotion Label']  # Replace with actual column names if different
->>>>>>> e97bf3f87304656772abbe691a6b43b6a92a9327
+        required_columns = ['mean_0_a', 'mean_1_a', 'mean_2_a', 'mean_3_a', 'label']  # Replace with actual column names if different
 
     print("First few rows of the dataset:")
+    print("Columns in the dataset:")
+    print(data.columns)
     print(data.head())
 
     missing_columns = [col for col in required_columns if col not in data.columns]

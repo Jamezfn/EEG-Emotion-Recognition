@@ -8,8 +8,6 @@ from sklearn.metrics import classification_report, confusion_matrix, accuracy_sc
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 import seaborn as sns
-import csv
-import pandas as pd
 
 def load_trained_model(model_path):
     """
@@ -64,16 +62,9 @@ def evaluate_model(model, X_test, y_test, class_names=None, output_dir=None):
     else:
         y_test_labels = y_test.flatten().astype(int)
         
-    # Check if class_names were provided or create default ones
     if class_names is None:
-        logging.warning("Class names not provided. Using default class names.")
-        class_names = [f'Class{i}' for i in range(len(np.unique(y_test_labels)))]
-    
-    # Ensure that the number of class names matches the number of unique labels
-    if len(class_names) != len(np.unique(y_test_labels)):
-        logging.error("Mismatch between class_names and unique labels in the dataset!")
-        raise ValueError("The length of class_names must match the number of unique labels in y_test.")
-    
+        class_names = [str(i) for i in range(len(np.unique(y_test_labels)))]
+        
     # Compute metrics
     accuracy = accuracy_score(y_test_labels, y_pred)
     report = classification_report(y_test_labels, y_pred, target_names=class_names, digits=4)
@@ -91,7 +82,6 @@ def evaluate_model(model, X_test, y_test, class_names=None, output_dir=None):
         # Ensure output directory exists
         os.makedirs(output_dir, exist_ok=True)
         
-        # Save evaluation metrics
         metrics_file = os.path.join(output_dir, 'evaluation_metrics.txt')
         with open(metrics_file, 'w') as f:
             f.write(f"Accuracy: {accuracy:.4f}\n\n")
@@ -101,62 +91,20 @@ def evaluate_model(model, X_test, y_test, class_names=None, output_dir=None):
             f.write(np.array2string(cm) + "\n")
             f.flush()  # Ensuring the results are written to file
         logging.info(f"Evaluation metrics saved to {metrics_file}")
-        
-        # Save confusion matrix plot
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
-                    xticklabels=class_names, yticklabels=class_names)
-        plt.xlabel('Predicted Label')
-        plt.ylabel('True Label')
-        plt.title('Confusion Matrix')
+
+    # Plot confusion matrix
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+                xticklabels=class_names, yticklabels=class_names)
+    plt.xlabel('Predicted Label')
+    plt.ylabel('True Label')
+    plt.title('Confusion Matrix')
+
+    # Save confusion matrix plot
+    if output_dir:
         plot_file = os.path.join(output_dir, 'confusion_matrix.png')
         plt.savefig(plot_file)
         logging.info(f"Confusion matrix plot saved to {plot_file}")
-        
-        # Save accuracy plot
-        plt.figure()
-        plt.plot(model.history.history['accuracy'], label='Accuracy')
-        plt.plot(model.history.history['val_accuracy'], label='Validation Accuracy')
-        plt.title('Model Accuracy')
-        plt.xlabel('Epoch')
-        plt.ylabel('Accuracy')
-        plt.legend(loc='lower right')
-        accuracy_plot_file = os.path.join(output_dir, 'accuracy_plot.png')
-        plt.savefig(accuracy_plot_file)
-        logging.info(f"Accuracy plot saved to {accuracy_plot_file}")
-
-        # Save loss curve plot
-        plt.figure()
-        plt.plot(model.history.history['loss'], label='Loss')
-        plt.plot(model.history.history['val_loss'], label='Validation Loss')
-        plt.title('Model Loss')
-        plt.xlabel('Epoch')
-        plt.ylabel('Loss')
-        plt.legend(loc='upper right')
-        loss_curve_file = os.path.join(output_dir, 'loss_curve.png')
-        plt.savefig(loss_curve_file)
-        logging.info(f"Loss curve plot saved to {loss_curve_file}")
-
-        # Save model comparison
-        model_comparison = [
-            ['Model', 'Accuracy'],
-            ['LSTM', accuracy]  # Change to include LSTM/GRU comparison results
-        ]
-        comparison_file = os.path.join(output_dir, 'model_comparison.csv')
-        with open(comparison_file, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(model_comparison)
-        logging.info(f"Model comparison saved to {comparison_file}")
-
-        # Save predictions
-        predictions_df = pd.DataFrame({
-            'True Label': y_test_labels,
-            'Predicted Label': y_pred
-        })
-        predictions_file = os.path.join(output_dir, 'predictions.csv')
-        predictions_df.to_csv(predictions_file, index=False)
-        logging.info(f"Predictions saved to {predictions_file}")
-
     else:
         plt.show()
 
