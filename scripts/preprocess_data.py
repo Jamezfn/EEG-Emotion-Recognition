@@ -47,7 +47,7 @@ def check_dataset(data, required_columns=None):
         The first few rows, info, and summary statistics of the dataset.
     """
     if required_columns is None:
-        required_columns = ['EEG Signal', 'Emotion Label']  # Replace with actual column names if different
+        required_columns = ['mean_0_a', 'mean_1_a','mean_2_a', 'mean_3_a', 'mean_4_a','mean_d_0_a','mean_d_1_a','mean_d_2_a','mean_d_3_a','mean_d_4_a','mean_d_0_a2','mean_d_1_a2','mean_d_2_a2','mean_d_3_a2','mean_d_4_a2','mean_d_5_a','mean_d_6_a','mean_d_7_a','mean_d_8_a','mean_d_9_a','mean_d_10_a', 'Emotion Label']  # Replace with actual column names if different
 
     print("First few rows of the dataset:")
     print(data.head())
