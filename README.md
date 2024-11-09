@@ -142,13 +142,13 @@ The `train_model.py` script trains the models on the preprocessed data. You can 
 **Train the LSTM model**:
 
 ```bash
-python scripts/train_model.py --model_type LSTM
+python -m scripts/train_model --model_type LSTM
 ```
 
 **Train the GRU model**:
 
 ```bash
-python scripts/train_model.py --model_type GRU
+python -m scripts.train_model --model_type GRU
 ```
 
 **Options**:
@@ -164,6 +164,12 @@ python scripts/train_model.py --model_type GRU
 ## Evaluation
 
 Once the models are trained, the `evaluate_model.py` script can be used to assess their performance. This script computes metrics like accuracy, precision, recall, F1-score, and plots the confusion matrix.
+
+**Convert model from keras to h5**
+
+```bash
+python convert_model.py
+```
 
 **Evaluate the LSTM model**:
 

@@ -8,6 +8,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.metrics import accuracy_score
 from tensorflow.keras.utils import to_categorical
 
+#from ..models.gru_model import build_gru_model
 from models.gru_model import build_gru_model
 from models.lstm_model import build_lstm_model
 
@@ -65,7 +66,7 @@ def train_and_evaluate_model(X_train, X_val, X_test, y_train, y_val, y_test,
         raise ValueError("Unsupported model type. Choose 'LSTM' or 'GRU'.")
 
     # Callbacks
-    checkpoint_path = os.path.join(output_dir, f'{model_type}_best_model.h5')
+    checkpoint_path = os.path.join(output_dir, f'{model_type}_best_model.keras')
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=5, verbose=1),
         ModelCheckpoint(filepath=checkpoint_path, monitor='val_loss', save_best_only=True, verbose=1)
@@ -91,8 +92,14 @@ def train_and_evaluate_model(X_train, X_val, X_test, y_train, y_val, y_test,
     else:
         # Multi-class classification
         y_pred = np.argmax(y_pred_probs, axis=1)
-        y_test = np.argmax(y_test, axis=1)
-
+        #y_test = np.argmax(y_test, axis=1)
+    # Ensure y_test is in the same format
+    if num_classes == 2:
+        y_test = (y_test > 0.5).astype(int)  # Convert binary labels
+    else:
+        y_test = np.argmax(y_test, axis=1)  # Convert one-hot labels to class indices   
+    #if len(y_test.shape) > 1 and y_test.shape[1] > 1:
+        #y_test = np.argmax(y_test, axis=1)
     accuracy = accuracy_score(y_test, y_pred)
     logging.info(f"Test Accuracy: {accuracy * 100:.2f}%")
 

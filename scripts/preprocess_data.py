@@ -47,7 +47,7 @@ def check_dataset(data, required_columns=None):
         The first few rows, info, and summary statistics of the dataset.
     """
     if required_columns is None:
-        required_columns = ['EEG Signal', 'Emotion Label']  # Replace with actual column names if different
+        required_columns = ['mean_0_a', 'mean_1_a', 'mean_2_a_', 'label']  # Replace with actual column names if different
 
     print("First few rows of the dataset:")
     print(data.head())
@@ -102,7 +102,7 @@ def scale_data(data):
     scaler = StandardScaler()
 
     # Adjust 'EEG Signal' to match actual EEG signal columns if different
-    eeg_columns = [col for col in data.columns if 'EEG' in col]  # Adjust if necessary
+    eeg_columns = [col for col in data.columns if 'mean_' in col]  # Adjust if necessary
 
     data[eeg_columns] = scaler.fit_transform(data[eeg_columns])
 
@@ -121,7 +121,7 @@ def create_sequences(data, sequence_length=10, overlap=True):
         X (np.array): 3D array of input data sequences.
         y (np.array): Labels for each sequence.
     """
-    eeg_columns = [col for col in data.columns if 'EEG' in col]  # Adjust if necessary
+    eeg_columns = [col for col in data.columns if 'mean_' in col]  # Adjust if necessary
     sequences = []
     labels = []
 
@@ -132,7 +132,7 @@ def create_sequences(data, sequence_length=10, overlap=True):
 
     for i in range(0, len(data) - sequence_length + 1, step):
         eeg_sequence = data[eeg_columns].iloc[i:i + sequence_length].values
-        label = data['Emotion Label'].iloc[i + sequence_length - 1]
+        label = data['mean_1_a'].iloc[i + sequence_length - 1]
         sequences.append(eeg_sequence)
         labels.append(label)
 
